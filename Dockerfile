@@ -1,22 +1,27 @@
-# Use an official Python runtime as a parent image
-FROM python:3.8-slim-buster
 
-COPY requirements.txt .
+
+
+
+# Use the official Python image as the base image
+FROM python:3.8-slim-buster
 
 # Set the working directory to /app
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Copy the requirements.txt file to the working directory
+COPY requirements.txt .
 
-# Install any needed packages specified in requirements.txt
+# Install the required packages
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
-# Set environment variables
+# Copy the rest of the application files to the working directory
+COPY . .
+
+# Set the PORT environment variable
 ENV PORT 8080
 
-# Expose the port the app runs on
+# Expose the PORT specified by the PORT environment variable
 EXPOSE $PORT
 
-# Run the command to start the app
-CMD [ "python", "main.py" ]
+# Start the microservice with gunicorn
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 app:app
