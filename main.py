@@ -5,7 +5,7 @@ from flask import Flask, jsonify, request
 app = Flask(__name__)
 
 # Update this path to reflect the location of the model file in the Cloud Storage bucket
-model_path = "gs://spokendigitmodel/model>"
+model_path = "gs://spokendigitmodel/model"
 
 # Load the model
 model = load_model(model_path)
