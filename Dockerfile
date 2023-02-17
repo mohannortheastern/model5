@@ -1,16 +1,20 @@
-FROM python:3.9-slim-buster
+# Use an official Python runtime as a parent image
+FROM python:3.8-slim-buster
 
+# Set the working directory to /app
 WORKDIR /app
 
-# Install dependencies
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+# Copy the current directory contents into the container at /app
+COPY . /app
 
-# Copy the model file from Cloud Storage to the Docker image
-RUN gsutil cp gs://spokendigitmodel/model /app/models/
+# Install any needed packages specified in requirements.txt
+RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
-# Copy the app code to the Docker image
-COPY main.py main.py
+# Set environment variables
+ENV PORT 8080
 
-# Start the app
-CMD ["python", "main.py"]
+# Expose the port the app runs on
+EXPOSE $PORT
+
+# Run the command to start the app
+CMD [ "python", "main.py" ]
